@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIVE Streaming Systems</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .sldp_indicator {
+            background-color: #fff;
+        }
+        .sldp_btn {
+            color: #fff !important;
+        }
+        #player {
+            width: 100vw;
+            height: 100vh;
+        }
+        .media-control-background {
+            height: 100vh !important;
+        }
+        .p2p-stat {
+            padding: 10px !important;
+            border-radius: 5px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            text-align: left;
+            font-size: 12px !important;
+        }
+        .p2p-stat span {
+            font-weight: 600;
+        }
+        #p2p-status {
+            justify-content: space-around;
+            font-size: 10px;
+            display: flex;
+            line-height: 12px;
+        }
+        #p2p-status .item {
+            margin: 0px 5px;
+            padding-right: 5px;
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        #p2p-status .item:last-child {
+            border-right: none;
+        }
+        #p2p-status .head {
+            font-size: 11px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="player"></div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
+    <script>
+        let crypt_url = '{"ciphertext":"W4D58G\/bg9lqIGXFXJnlxNf\/NrvFSfJhN7AyUQxwV91FAF0\/tLizBZgB4hjWWhc\/Bf86kbiUN\/ChKQJfQwU3ml1+sbCfa+KDDAIqLc9f4MDt\/Bu3+pFAr3+pNqF8X5y4ah55QP7mNEM8YWtjswMemDtSD6rb91EHc08ob9y5sch3PQaqKuj4E6fUQj2rNtpKkKVGj7SmNJxZ8+bIB1wMPdkaXM\/iG0VDn7Qeyzm5GOXL4WD7OO7Z3YoC4ZnqD0mgpezQromsqMe1beW5xNFKGdKfyqvWTvQMRc5wb8BeKeL23yFxTBIYvXx9VVOGhh8pN7ZhfTSfetJ2tDuHazkF6Q8m3PcWopJvI83\/W+v1PcTRZSiRm+SXAxa548xFgPHkop0PrCFRzucdcpvfUs2DvYDu9JJxv5sQ8vqiP3gcUJNNVhZsGtU9Pw71E7\/3GywtaaQKE5sIpD1ikLNB45y+B6pegKtMOcRTzOzBTfB76BkJ+LEm+gzMGwAUcGaQu7Hg\/0Djw7YiEzwtbElKzzErpl+8kzYDTlu1fTS6OEoPQ7VwdljQWuHab6cDuZ8CVRc1\/OXomxJREjygY1r5kqAJhA==","iv":"132348089e5948a789086bfae789c4f9","salt":"3bddac74a1c9ac14d27194f422febd64cebf1342eb5bfcb9df89ea9bf75df158c8531ec2223bb248fc48dff85b10c210970d085f9aa54f8d4a76e99acf99412b2a9e4f34a70984212b1eaf2434e8c4e0fbc3b76f7913596a8cba17a7340bda480183e2b02049c3c33a77e603ea0937fdd26d26f3743bf991c57ffe458c035daccc328d66fe743a0cc7ccf7bb6916d007d9f77066024caa7662f480fe9efd18f01eafb1f86b51fc198ede936c9daa3ae1d65f5646f52894b83a81ec162a58c0c52cde44ee5a2d180e1e51fac34685174a17834c3f5cfe6cd3f65bb1d25f3770b733e86e3d0dfdee4e6487dbd7e7474e9f23d5534baa3e2dd057c5c564728582e5","type":"wss"}';
+        crypt_url = CryptoJSAesDecrypt(crypt_url);
+        function CryptoJSAesDecrypt(encrypt_string) {
+            var aI = 'ThisKeyIsForEmbedding!'
+            var aF = JSON.parse(encrypt_string);
+            var aC = aF.ciphertext;
+            var aG = CryptoJS.enc.Hex.parse(aF.salt);
+            var aE = CryptoJS.enc.Hex.parse(aF.iv);
+            var aD = CryptoJS.PBKDF2(aI, aG, { hasher: CryptoJS.algo.SHA512, keySize: 8, iterations: 999 });
+            var aH = CryptoJS.AES.decrypt(aC, aD, { iv: aE });
+            return aH.toString(CryptoJS.enc.Utf8);
+        }
+    </script>
+
+        
+    <script src="https://mv24hr.info/js/sldp-v2.18.0.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", initPlayer);
+        function initPlayer(){
+            player = SLDP.init({
+                container:          'player',
+                stream_url:         crypt_url,
+                buffering:          500,
+                autoplay:           true,
+                height:             'parent',
+                width:              'parent'
+            });
+        };
+    </script>
+
+    
+</body>
+</html>
